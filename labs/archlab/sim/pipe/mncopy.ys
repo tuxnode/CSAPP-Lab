@@ -80,16 +80,16 @@ Loop2:
         rmmovq %r9, 8(%rsi)
         rmmovq %r10, 16(%rsi)
         rmmovq %r11, 24(%rsi)
-ele9:   andq %r8, %r8           # val <= 0?
-        jle ele10:               # if so, goto ele1:
+ele1:   andq %r8, %r8           # val <= 0?
+        jle ele2:               # if so, goto ele1:
         iaddq $1, %rax          # count++, %rax         
-ele10:  andq %r9, %r9
-        jle ele11:
+ele2:   andq %r9, %r9
+        jle ele3:
         iaddq $1, %rax
-ele11:  andq %r10, %r10
-        jle ele12:
+ele3:   andq %r10, %r10
+        jle ele4:
         iaddq $1, %rax
-ele12:  andq %r11, %r11
+ele4:   andq %r11, %r11
         jle Npos2:
         iaddq $1, %rax
 Npos2:  iaddq $32,%rdi
