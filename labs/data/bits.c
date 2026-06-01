@@ -254,7 +254,8 @@ int isLessOrEqual(int x, int y) {
  *   Rating: 4 
  */
 int logicalNeg(int x) {
-  return 2;
+  // 0和0的补码|运算都相同，非0数字与它本身的补码|运算最高位为1
+  return ((x | (~x + 1)) >> 31) + 1;
 }
 /* howManyBits - return the minimum number of bits required to represent x in
  *             two's complement
@@ -269,7 +270,26 @@ int logicalNeg(int x) {
  *  Rating: 4
  */
 int howManyBits(int x) {
-  return 0;
+  int sign = x >> 31;
+  x = x ^ sign;
+
+  int b16 = !!(x >> 16) << 4;
+  x = x >> b16;
+
+  int b8 = !!(x >> 8) << 3;
+  x = x >> b8;
+
+  int b4 = !!(x >> 4) << 2;
+  x = x >> b4;
+
+  int b2 = !!(x >> 2) << 1;
+  x = x >> b2;
+
+  int b1 = !!(x >> 1);
+  x = x >> b1;
+
+  int b0 = x;
+  return b16 + b8 + b4 + b2 + b1 + b0 + 1;
 }
 //float
 /* 
@@ -284,7 +304,19 @@ int howManyBits(int x) {
  *   Rating: 4
  */
 unsigned floatScale2(unsigned uf) {
-  return 2;
+  unsigned sign = uf & 0x80000000; // 提取符号位
+  unsigned exp = (uf >> 23) & 0xff;
+  unsigned frac = uf & 0x007fffff; // 提取低23位
+
+  if (exp == 0xff) {
+    return uf;
+  }
+
+  if (exp == 0) {
+    return sign | (uf << 1);
+  }
+  exp = exp + 1;
+  return sign | (exp << 23) | frac;
 }
 /* 
  * floatFloat2Int - Return bit-level equivalent of expression (int) f
@@ -299,7 +331,30 @@ unsigned floatScale2(unsigned uf) {
  *   Rating: 4
  */
 int floatFloat2Int(unsigned uf) {
-  return 2;
+  unsigned sign = uf & 0x80000000; // 提取符号位
+  unsigned exp = (uf >> 23) & 0xff;
+  unsigned frac = uf & 0x007fffff; // 提取低23位
+
+  int E = exp - 127;
+  if (E < 0) {
+    return 0;
+  }
+  // 如果大于等于31，32位整数会发生溢出，所以直接返回最大值
+  if (E >= 31) {
+    return 0x80000000u;
+  }
+  // 补上前导1
+  // 0x00800000 1在第23位
+  int M = frac | 0x00800000; 
+  if (E > 23) {
+    M = M << (E - 23);
+  } else {
+    M = M >> (23 - E);
+  }
+  if (sign) {
+    return ~M + 1;
+  }
+  return M;
 }
 /* 
  * floatPower2 - Return bit-level equivalent of the expression 2.0^x
