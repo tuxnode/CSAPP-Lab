@@ -370,5 +370,14 @@ int floatFloat2Int(unsigned uf) {
  *   Rating: 4
  */
 unsigned floatPower2(int x) {
-    return 2;
+  if (x < -149) {
+    return 0;
+  } else if (x < -126) {
+    // 阶码清零，1最低位是2的-23次方，要表示2的126次方需要多移动23位
+    return 1 << (x + 126 + 23);
+  } else if (x <= 127) {
+    return (x + 127) << 23;
+  } else {
+    return 255 << 23; // 无穷大
+  }
 }
