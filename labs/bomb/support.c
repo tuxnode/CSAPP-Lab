@@ -91,7 +91,33 @@ void phase_1(const char *input) {
   400f42:	c3                   	ret
 */
 void phase_2(const char *input) {
+  int array[6];
+  read_six_num(input, array);
+
+  if (array[0] != 1) {
+    explode_bomb();
+  }
+
+  for (int i = 1; i < 6; i++) {
+    if (array[i] != array[i - 1] * 2) {
+      explode_bomb();
+    }
+  }
 } 
+
+void read_six_num(const char *input_string, int *numbers_array) {
+  int scanned_count = sscanf(input_string, "%d %d %d %d %d %d", 
+                               &numbers_array[0], 
+                               &numbers_array[1], 
+                               &numbers_array[2], 
+                               &numbers_array[3], 
+                               &numbers_array[4], 
+                               &numbers_array[5]);
+
+  if (scanned_count <= 5) {
+    explode_bomb();
+  }
+}
 
 // 炸弹爆炸
 void explode_bomb() {
