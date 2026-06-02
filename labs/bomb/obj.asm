@@ -418,6 +418,7 @@ Disassembly of section .text:
   400fc9:	48 83 c4 18          	add    rsp,0x18
   400fcd:	c3                   	ret
 
+# 二分算法
 0000000000400fce <func4>:
   400fce:	48 83 ec 08          	sub    rsp,0x8
   400fd2:	89 d0                	mov    eax,edx

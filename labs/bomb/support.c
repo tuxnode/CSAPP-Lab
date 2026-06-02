@@ -165,6 +165,24 @@ void phase_3(const char *input) {
   */
 }
 
+int func4(int edi, int esi, int edx) {
+    int low = esi;
+    int high = edx;
+    int val = edi;
+    
+    int mid = ((high - low) + ((high - low) >> 31)) / 2 + low;
+
+    if (mid > val) {
+        return 2 * func4(val, low, mid - 1);
+    } else {
+        if (mid >= val) { // 即 mid == val
+            return 0;
+        } else {
+            return 2 * func4(val, mid + 1, high) + 1;
+        }
+    }
+}
+
 // 炸弹爆炸
 void explode_bomb() {
   puts("BOOM!!!");
