@@ -525,12 +525,12 @@ for (int rax = 0; rax < 6; rax++)
   4010fc:	48 83 ec 50          	sub    rsp,0x50
   401100:	49 89 e5             	mov    r13,rsp
   401103:	48 89 e6             	mov    rsi,rsp
-  401106:	e8 51 03 00 00       	call   40145c <read_six_numbers>
-  40110b:	49 89 e6             	mov    r14,rsp
-  40110e:	41 bc 00 00 00 00    	mov    r12d,0x0
-  401114:	4c 89 ed             	mov    rbp,r13
-  401117:	41 8b 45 00          	mov    eax,DWORD PTR [r13+0x0]
-  40111b:	83 e8 01             	sub    eax,0x1
+  401106:	e8 51 03 00 00       	call   40145c <read_six_numbers> // 将数字放置在栈上的数组中
+  40110b:	49 89 e6             	mov    r14,rsp  // 将数组首地址保存起来
+  40110e:	41 bc 00 00 00 00    	mov    r12d,0x0 // iterator
+  401114:	4c 89 ed             	mov    rbp,r13 // 保持指向栈顶
+  401117:	41 8b 45 00          	mov    eax,DWORD PTR [r13+0x0] // 第一个数字传送进入rax
+  40111b:	83 e8 01             	sub    eax,0x1  // -1?
   40111e:	83 f8 05             	cmp    eax,0x5
   401121:	76 05                	jbe    401128 <phase_6+0x34>
   401123:	e8 12 03 00 00       	call   40143a <explode_bomb>
@@ -538,6 +538,7 @@ for (int rax = 0; rax < 6; rax++)
   40112c:	41 83 fc 06          	cmp    r12d,0x6
   401130:	74 21                	je     401153 <phase_6+0x5f>
   401132:	44 89 e3             	mov    ebx,r12d
+
   401135:	48 63 c3             	movsxd rax,ebx
   401138:	8b 04 84             	mov    eax,DWORD PTR [rsp+rax*4]
   40113b:	39 45 00             	cmp    DWORD PTR [rbp+0x0],eax
@@ -546,11 +547,14 @@ for (int rax = 0; rax < 6; rax++)
   401145:	83 c3 01             	add    ebx,0x1
   401148:	83 fb 05             	cmp    ebx,0x5
   40114b:	7e e8                	jle    401135 <phase_6+0x41>
+
+  // 确保数字在1-6且不重复
+
   40114d:	49 83 c5 04          	add    r13,0x4
   401151:	eb c1                	jmp    401114 <phase_6+0x20>
   401153:	48 8d 74 24 18       	lea    rsi,[rsp+0x18]
   401158:	4c 89 f0             	mov    rax,r14
-  40115b:	b9 07 00 00 00       	mov    ecx,0x7
+  40115b:	b9 07 00 00 00       	mov    ecx,0x7 // !减去7
   401160:	89 ca                	mov    edx,ecx
   401162:	2b 10                	sub    edx,DWORD PTR [rax]
   401164:	89 10                	mov    DWORD PTR [rax],edx
@@ -564,7 +568,7 @@ for (int rax = 0; rax < 6; rax++)
   40117d:	39 c8                	cmp    eax,ecx
   40117f:	75 f5                	jne    401176 <phase_6+0x82>
   401181:	eb 05                	jmp    401188 <phase_6+0x94>
-  401183:	ba d0 32 60 00       	mov    edx,0x6032d0
+  401183:	ba d0 32 60 00       	mov    edx,0x6032d0 // 链表地址
   401188:	48 89 54 74 20       	mov    QWORD PTR [rsp+rsi*2+0x20],rdx
   40118d:	48 83 c6 04          	add    rsi,0x4
   401191:	48 83 fe 18          	cmp    rsi,0x18
